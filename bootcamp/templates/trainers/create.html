@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}New Trainer{% endblock %}
+
+{% block content %}
+    <h3 class="display-4 text-center mb-5">Create Trainers</h3>
+
+    <form class="needs-validation" method="POST" novalidate autocomplete="off">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="first_name">First Name</label>
+            <input type="text" name="first_name" id="first_name" class="form-control" required>
+            <div class="valid-feedback"></div>
+            <div class="invalid-feedback">Please fill out first name</div>
+        </div>
+        <div class="form-group">
+            <label for="last_name">Last Name</label>
+            <input type="text" name="last_name" id="last_name" class="form-control" required>
+            <div class="valid-feedback"></div>
+            <div class="invalid-feedback">Please fill out last name</div>
+        </div>
+        <div class="form-group">
+            <label for="subject">Subject</label>
+            <input type="text" name="subject" id="subject" class="form-control" required>
+            <div class="valid-feedback"></div>
+            <div class="invalid-feedback">Please fill out subject</div>
+        </div>
+        <input type="submit" value="Create Trainer" class="btn btn-primary">
+        <input type="reset" value="Cancel" class="btn btn-danger float-right">
+    </form>
+{% endblock %}
