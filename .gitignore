@@ -2,6 +2,3 @@
 env/
 .env
 *__
-
-# Database
-*.sqlite3
