@@ -5,7 +5,7 @@
 {% block content %}
     <h3 class="display-4 text-center mb-5">Create Trainers</h3>
 
-    <form class="needs-validation" method="POST" novalidate autocomplete="off">
+    <form action="{% url 'create_trainer' %}" class="needs-validation" method="POST" novalidate autocomplete="off">
         {% csrf_token %}
         <div class="form-group">
             <label for="first_name">First Name</label>

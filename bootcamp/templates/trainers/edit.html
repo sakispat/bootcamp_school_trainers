@@ -5,7 +5,7 @@
 {% block content %}
     <h3 class="display-4 text-center mb-4">Edit Trainers</h3>
 
-    <form class="needs-validation" method="POST" novalidate>
+    <form action="{% url 'update_trainer' trainer.id %}" class="needs-validation" method="POST" novalidate>
         {% csrf_token %}
         <div class="form-group">
             <label for="first_name">First Name</label>

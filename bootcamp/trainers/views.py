@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib import messages
 from .models import Trainer
@@ -24,38 +24,33 @@ def index(request):
 # Create Trainers Form
 def create_trainer(request):
     if request.method == 'POST':
-        trainerForm = TrainerForm(request.POST)
-        if trainerForm.is_valid():
-            trainerForm.save()
-            messages.success(request, 'Registration was successfully')
+        form = TrainerForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Create trainer was successfully')
             return redirect('home')
-    else:
-        trainerForm = TrainerForm()
-    return render(request, 'trainers/create.html', { 'form': trainerForm })
+    form = TrainerForm()
+    context = { 'form': form }
+    return render(request, 'trainers/create.html', context)
 
 
 # Edit/Update ID Trainer Form
-def edit_trainer(request, id):
+def update_trainer(request, trainer_id):
+    trainer = get_object_or_404(Trainer, id=trainer_id)
     if request.method == 'POST':
-        trainer = Trainer.objects.get(id=id)
-
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        subject = request.POST.get('subject')
-
-        Trainer.objects.filter(id=id).update(first_name=first_name)
-        Trainer.objects.filter(id=id).update(last_name=last_name)
-        Trainer.objects.filter(id=id).update(subject=subject)
-
-        return redirect('home')
-    else:
-        trainer = Trainer.objects.get(id=id)
-    return render(request, 'trainers/edit.html', { 'trainer': trainer })
+        form = TrainerForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Update trainer was successfully')
+            return redirect('home')
+    form = TrainerForm()
+    context = { 'form': form, 'trainer': trainer }
+    return render(request, 'trainers/edit.html', context)
 
 
 # Delete ID Trainer
-def delete_trainer(request, id):
-    trainer = Trainer.objects.filter(id=id)
+def delete_trainer(request, trainer_id):
+    trainer = get_object_or_404(Trainer, id=trainer_id)
     trainer.delete()
     messages.success(request, 'Okay! Successfully delete the trainer')
     return redirect('home')
@@ -63,14 +58,13 @@ def delete_trainer(request, id):
 
 # Search Trainers in Table
 def search_trainer(request):
-    if request.method == 'POST':
-        search = request.POST['search']
-        search_trainer = Trainer.objects.filter(last_name__contains=search)
-        if not search_trainer:
+    query = request.POST.get('q')
+    results = []
+    if query:
+        results = Trainer.objects.filter(last_name__icontains=query)
+        if not results:
             messages.error(request, 'The search for an instructor you are looking for was not successfully try again')
         else:
             messages.success(request, 'The search for trainer what you were looking for was successfully')
-        return render(request, 'trainers/search.html', { 'search': search, 'search_trainer': search_trainer })
-    else:
-        return render(request, 'trainers/search.html')
-
+    context = {'results': results, 'query': query}
+    return render(request, 'trainers/search.html', context)
